@@ -1,5 +1,3 @@
-import unittest
-from binary_search_tree import Test
 from binary_search_tree import BinarySearchTree
 from binary_search_tree import BinarySearchNode
 from binary_search_tree import sample_code
@@ -55,13 +53,7 @@ class BinarySearchNode(BinarySearchNode):
         elif value == self.value:
             old_self = self
             if old_self.left:
-                # 1. cut left_max.
-                left_max = old_self.left.search_max()
-                if left_max.left:
-                    left_max.left.parent = left_max.parent
-
-                # 2. insert left_max into root.
-                self = left_max
+                self = old_self.left.search_max()
                 self.left = old_self.left.delete_max()
                 if self.left:
                     self.left.parent = self
@@ -69,19 +61,11 @@ class BinarySearchNode(BinarySearchNode):
                 if self.right:
                     self.right.parent = self
                 self.parent = old_self.parent
-                # if self.parent:
-                #     ...
             else:
-                # 1. cut left_max.
-                # 2. insert left_max into root.
                 self = old_self.right
                 if self:
                     self.parent = old_self.parent
 
-            # 3. delete old_self
-            old_self.parent = None
-            old_self.left = None
-            old_self.right = None
         return self
 
     def delete_right(self, value):
@@ -98,34 +82,36 @@ class BinarySearchNode(BinarySearchNode):
         elif value == self.value:
             old_self = self
             if old_self.right:
-                # 1. cut right_min.
-                right_min = old_self.right.search_min()
-                if right_min.right:
-                    right_min.right.parent = right_min.parent
-
-                # 2. insert right_min into root.
-                self = right_min
-                self.left = old_self.left
-                if self.left:
-                    self.left.parent = self
+                self = old_self.right.search_min()
                 self.right = old_self.right.delete_min()
                 if self.right:
                     self.right.parent = self
+                self.left = old_self.left
+                if self.left:
+                    self.left.parent = self
                 self.parent = old_self.parent
-                # if self.parent:
-                #     ...
-
             else:
-                # 1. cut right_min.
-                # 2. insert right_min into root.
                 self = old_self.left
                 if self:
                     self.parent = old_self.parent
+        return self
 
-            # 3. delete old root.
-            old_self.parent = None
-            old_self.left = None
-            old_self.right = None
+    def delete_max(self):
+        if self.right:
+            self.right = self.right.delete_max()
+        else:
+            if self.right:
+                self.left.parent = self.parent
+            self = self.left
+        return self
+
+    def delete_min(self):
+        if self.left:
+            self.left = self.left.delete_min()
+        else:
+            if self.right:
+                self.right.parent = self.parent
+            self = self.right
         return self
 
 
@@ -159,5 +145,3 @@ class Path(object):
 
 if __name__ == '__main__':
     sample_code()
-    suite = unittest.defaultTestLoader.loadTestsFromTestCase(Test)
-    unittest.TextTestRunner().run(suite)
