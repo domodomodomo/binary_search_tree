@@ -65,7 +65,9 @@ class BinarySearchNode(BinarySearchNode):
                 self = old_self.right
                 if self:
                     self.parent = old_self.parent
-
+            old_self.parent = None
+            old_self.left = None
+            old_self.right = None
         return self
 
     def delete_right(self, value):
@@ -94,6 +96,9 @@ class BinarySearchNode(BinarySearchNode):
                 self = old_self.left
                 if self:
                     self.parent = old_self.parent
+            old_self.parent = None
+            old_self.left = None
+            old_self.right = None
         return self
 
     def delete_max(self):
